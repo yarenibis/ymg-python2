@@ -18,38 +18,47 @@
   <ul class="list-group" id="personelListesi"></ul>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    const API_BASE = "http://localhost:9090";
+ <script>
+  const API_BASE = "http://localhost:9090";
 
-    function listele() {
+  function listele() {
     $.get(`${API_BASE}/api/personel`, function(data) {
-        $('#personelListesi').empty();
-        data.forEach(p => {
+      $('#personelListesi').empty();
+      data.forEach(p => {
         $('#personelListesi').append(`<li class="list-group-item">${p.ad} ${p.soyad} - ${p.pozisyon}</li>`);
-        });
+      });
     });
-    }
+  }
 
-    $('#personelForm').submit(function(e) {
+  $('#personelForm').submit(function(e) {
     e.preventDefault();
     const yeni = {
-        ad: $('#ad').val(),
-        soyad: $('#soyads').val(),
-        pozisyon: $('#pozisyon').val()
+      ad: $('#ad').val(),
+      soyad: $('#soyad').val(),
+      pozisyon: $('#pozisyon').val()
     };
+
+    if (!yeni.ad || !yeni.soyad || !yeni.pozisyon) {
+      alert("Lütfen tüm alanları doldurun.");
+      return;
+    }
+
+    console.log("📤 Gönderilen veri:", yeni); // Tarayıcı konsoluna log bırak
+
     $.ajax({
-        type: 'POST',
-        url: `${API_BASE}/api/personel`,
-        data: JSON.stringify(yeni),
-        contentType: 'application/json',
-        success: function() {
+      type: 'POST',
+      url: `${API_BASE}/api/personel`,
+      data: JSON.stringify(yeni),
+      contentType: 'application/json',
+      success: function() {
         listele();
         $('#personelForm')[0].reset();
-        }
+      }
     });
-    });
+  });
 
-    listele();
-  </script>
+  listele();
+</script>
+
 </body>
 </html>
