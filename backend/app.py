@@ -20,13 +20,18 @@ def get_personel():
     data = Personel.query.all()
     return jsonify([{'id': p.id, 'ad': p.ad, 'soyad': p.soyad, 'pozisyon': p.pozisyon} for p in data])
 
-@app.route('/api/personel', methods=['POST'])  #personel ekler
+@app.route('/api/personel', methods=['POST'])
 def add_personel():
     data = request.get_json()
+
+    if not all(k in data for k in ('ad', 'soyad', 'pozisyon')):
+        return jsonify({'error': 'Eksik bilgi gönderildi'}), 400
+
     p = Personel(ad=data['ad'], soyad=data['soyad'], pozisyon=data['pozisyon'])
     db.session.add(p)
     db.session.commit()
     return jsonify({'id': p.id, 'ad': p.ad, 'soyad': p.soyad, 'pozisyon': p.pozisyon}), 201
+
 
 if __name__ == '__main__':
     with app.app_context():
